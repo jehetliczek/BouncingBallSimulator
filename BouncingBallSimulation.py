@@ -3,7 +3,7 @@ import math
 
 pygame.init()
 ScreenResolution = (1500, 600)
-BallStartingPos = (ScreenResolution[0] - 50, 250 )
+BallStartingPos = (ScreenResolution[0] - 50, 200 )
 TimeStep = 10
 SlopeAngle = 10.0
 Screen = pygame.display.set_mode(ScreenResolution)
@@ -15,7 +15,7 @@ def slopeDraw(SlopeAngle, ScreenResolution):
 class MovingObject:
     def __init__(self, StartX, StartY, TimeStep_ms, SlopeAngle, ScreenResolution):
         self.ScreenResolution = ScreenResolution
-        self.Angle = SlopeAngle
+        self.SlopeAngle = SlopeAngle
         self.TimeStep = TimeStep_ms / 1000.0
         self.X = float(StartX)
         self.Y = float(StartY)
@@ -23,7 +23,7 @@ class MovingObject:
         self.vY = 0.0
         self.aX = 0.0
         self.aY = 981.0
-        self.A = math.tan(self.Angle * math.pi / 180.0)
+        self.A = math.tan(self.SlopeAngle * math.pi / 180.0)
         self.B = 1.0
         self.C = -self.ScreenResolution[1]
         self.PrevDistance = abs(self.A * StartX + self.B * StartY + self.C) / math.sqrt(self.A ** 2 + self.B ** 2)
@@ -41,9 +41,16 @@ class MovingObject:
     
     def bounceOffSurface(self):
         vX_Old = self.vX
-        vY_Old = self.vY
-        self.vX = -(vY_Old * math.cos((90.0 - 2* self.Angle) * math.pi / 180.0) - vX_Old * math.cos((self.Angle * 2) * math.pi / 180.0))
-        self.vY = -(vY_Old * math.sin((90.0 - 2* self.Angle) * math.pi / 180.0) - vX_Old * math.sin((self.Angle * 2) * math.pi / 180.0))
+        vY_Old = -self.vY
+        self.vX = vY_Old * math.cos((90.0 - 2 * self.SlopeAngle) * math.pi / 180.0) + vX_Old * math.cos((-2 * self.SlopeAngle) * math.pi / 180.0)
+        self.vY = vY_Old * math.sin((90.0 - 2 * self.SlopeAngle) * math.pi / 180.0) + vX_Old * math.sin((-2 * self.SlopeAngle) * math.pi / 180.0)
+        
+        #try:
+        #    VeloAngle = math.atan(vY_Old / vX_Old)
+        #except ZeroDivisionError:
+        #    VeloAngle = math.pi/2
+        #self.vX = -math.sqrt(vX_Old ** 2 + vY_Old ** 2) * math.cos(VeloAngle - 2 * self.Angle * math.pi / 180.0)
+        #self.vY = -math.sqrt(vX_Old ** 2 + vY_Old ** 2) * math.sin(VeloAngle - 2 * self.Angle * math.pi / 180.0)
 
     def clashDetection(self):
         Distance = abs(self.A * self.X + self.B * self.Y + self.C) / math.sqrt(self.A ** 2 + self.B ** 2)
