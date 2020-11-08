@@ -3,7 +3,7 @@ import math
 
 pygame.init()
 ScreenResolution = (1500, 600)
-BallStartingPos = (ScreenResolution[0] - 50, 100)
+BallStartingPos = (ScreenResolution[0] - 50, 250 )
 TimeStep = 10
 SlopeAngle = 10.0
 Screen = pygame.display.set_mode(ScreenResolution)
@@ -42,7 +42,7 @@ class MovingObject:
     def bounceOffSurface(self):
         vX_Old = self.vX
         vY_Old = self.vY
-        self.vX = -(vY_Old * math.cos((90.0 - 2* self.Angle) * math.pi / 180.0) + vX_Old * math.cos((self.Angle * 2) * math.pi / 180.0))
+        self.vX = -(vY_Old * math.cos((90.0 - 2* self.Angle) * math.pi / 180.0) - vX_Old * math.cos((self.Angle * 2) * math.pi / 180.0))
         self.vY = -(vY_Old * math.sin((90.0 - 2* self.Angle) * math.pi / 180.0) - vX_Old * math.sin((self.Angle * 2) * math.pi / 180.0))
 
     def clashDetection(self):
@@ -54,11 +54,11 @@ class MovingObject:
         if DistanceDelta > 0 and self.MoveDownDirection is True:
             self.MoveDownDirection = False
             self.bounceOffSurface()
-        elif DistanceDelta < 0.1 and DistanceDelta > -0.1 and self.MoveDownDirection is False: # Maximum height of a single bounce, height over slope
-            self.MaxHeight = font.render("Max height: " + str(int(Distance)), True, (255, 255, 255))
             self.No += 1
             self.NoOfBounces = font.render("Bounce no: " + str(self.No), True, (255, 255, 255))
             self.Range = font.render("Range: " + str( int(abs(BallStartingPos[0] - self.X)) ), True, (255, 255, 255))
+        elif DistanceDelta < 0.1 and DistanceDelta > -0.1 and self.MoveDownDirection is False: # Maximum height of a single bounce, height over slope
+            self.MaxHeight = font.render("Max height: " + str(int(Distance)), True, (255, 255, 255))
             self.MoveDownDirection = True
         
         self.PrevDistance = Distance
