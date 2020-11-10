@@ -1,5 +1,6 @@
 import pygame
 import math
+from pygame import mixer
 
 pygame.init()
 ScreenResolution = (1500, 600)
@@ -61,6 +62,8 @@ class MovingObject:
         if DistanceDelta > 0 and self.MoveDownDirection is True:
             self.MoveDownDirection = False
             self.bounceOffSurface()
+            BounceSound = mixer.Sound("laser.wav")
+            BounceSound.play()
             self.No += 1
             self.NoOfBounces = font.render("Bounce no: " + str(self.No), True, (255, 255, 255))
             self.Range = font.render("Range: " + str( int(abs(BallStartingPos[0] - self.X)) ), True, (255, 255, 255))
